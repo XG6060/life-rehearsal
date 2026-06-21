@@ -20,4 +20,3 @@ test_*.txt
 *.mtl
 *.jpg
 *.png
-ui/static/

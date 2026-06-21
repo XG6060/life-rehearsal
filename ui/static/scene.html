@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{overflow:hidden;background:#0F172A;font-family:Inter,-apple-system,PingFang SC,Microsoft YaHei,sans-serif}
+.scene{width:100vw;height:100vh;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden}
+.grid{position:absolute;inset:0;background-image:radial-gradient(circle,rgba(99,102,241,0.05) 1px,transparent 1px);background-size:28px 28px}
+
+/* Central accent */
+.accent{width:36px;height:2px;background:#6366F1;border-radius:1px;margin-bottom:20px;z-index:2}
+.brand{font-size:38px;font-weight:700;color:#F1F5F9;letter-spacing:0.04em;z-index:2;margin-bottom:6px}
+.tagline{font-size:14px;color:#94A3B8;letter-spacing:0.08em;z-index:2;margin-bottom:40px}
+
+/* Feature dots */
+.features{display:flex;gap:32px;z-index:2}
+.feat{display:flex;align-items:center;gap:8px;color:#64748B;font-size:12px;font-weight:500}
+.feat::before{content:'';width:5px;height:5px;border-radius:50%;background:#6366F1;flex-shrink:0}
+
+/* Floating questions */
+.fq{position:absolute;color:rgba(203,213,225,0.5);font-size:12px;font-weight:500;padding:5px 15px;border-radius:20px;background:rgba(99,102,241,0.06);border:1px solid rgba(99,102,241,0.1);z-index:2;pointer-events:none;animation:fqFloat 8s ease-in-out infinite}
+@keyframes fqFloat{0%,100%{transform:translateY(0) translateX(0)}25%{transform:translateY(-10px) translateX(4px)}75%{transform:translateY(-5px) translateX(-3px)}}
+.fq:nth-child(3n){animation-delay:1s;animation-duration:9s}
+.fq:nth-child(4n){animation-delay:2s;animation-duration:7s}
+.fq:nth-child(5n){animation-delay:3s;animation-duration:10s}
+
+/* Large ambient circles */
+.circle{position:absolute;border-radius:50%;z-index:1;border:1px solid rgba(99,102,241,0.06)}
+.c1{width:300px;height:300px;top:15%;left:10%}
+.c2{width:200px;height:200px;bottom:20%;right:15%;border-color:rgba(99,102,241,0.04)}
+.c3{width:400px;height:400px;top:40%;right:-10%;border-color:rgba(99,102,241,0.03)}
+
+/* Particle */
+.p{position:absolute;border-radius:50%;background:rgba(99,102,241,0.12);pointer-events:none;animation:pFloat linear infinite;bottom:0}
+@keyframes pFloat{0%{transform:translateY(0) scale(0);opacity:0}15%{opacity:0.6}85%{opacity:0.08}100%{transform:translateY(-100vh) scale(0.5);opacity:0}}
+</style>
+</head>
+<body>
+<div class="scene">
+  <div class="grid"></div>
+  <div class="circle c1"></div>
+  <div class="circle c2"></div>
+  <div class="circle c3"></div>
+
+  <!-- Floating decision questions -->
+  <div class="fq" style="top:8%;left:10%">要不要分手</div>
+  <div class="fq" style="top:16%;left:60%">要不要辞职</div>
+  <div class="fq" style="top:28%;left:14%">要不要买房</div>
+  <div class="fq" style="top:38%;left:68%">要不要考研</div>
+  <div class="fq" style="top:50%;left:8%">要不要表白</div>
+  <div class="fq" style="top:60%;left:72%">要不要跳槽</div>
+  <div class="fq" style="top:72%;left:16%">要不要搬家</div>
+  <div class="fq" style="top:82%;left:58%">要不要换城市</div>
+
+  <!-- Brand -->
+  <div class="accent"></div>
+  <div class="brand">生活预演家</div>
+  <div class="tagline">AI DECISION SIMULATOR</div>
+  <div class="features">
+    <span class="feat">决策偏误检测</span>
+    <span class="feat">12 周心理模拟</span>
+    <span class="feat">多路径对比</span>
+  </div>
+
+  <!-- Particles -->
+  <div class="p" style="width:2px;height:2px;left:5%;animation-duration:10s;animation-delay:0s"></div>
+  <div class="p" style="width:3px;height:3px;left:15%;animation-duration:14s;animation-delay:2s"></div>
+  <div class="p" style="width:2px;height:2px;left:28%;animation-duration:12s;animation-delay:3s"></div>
+  <div class="p" style="width:4px;height:4px;left:40%;animation-duration:18s;animation-delay:1s"></div>
+  <div class="p" style="width:3px;height:3px;left:52%;animation-duration:16s;animation-delay:4s"></div>
+  <div class="p" style="width:2px;height:2px;left:65%;animation-duration:11s;animation-delay:2s"></div>
+  <div class="p" style="width:3px;height:3px;left:75%;animation-duration:20s;animation-delay:0s"></div>
+  <div class="p" style="width:4px;height:4px;left:88%;animation-duration:13s;animation-delay:3s"></div>
+</div>
+</body>
+</html>
