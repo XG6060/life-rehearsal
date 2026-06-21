@@ -154,7 +154,9 @@ def _inject_style():
 
 def _render_brand():
     import os
-    _scene_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'static', 'scene.html')
+    _scene_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'components', 'scene.html')
+    if not os.path.exists(_scene_path):
+        _scene_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'static', 'scene.html')
     with open(_scene_path, 'r', encoding='utf-8') as _f:
         html = _f.read()
     components.html(html, height=1000)

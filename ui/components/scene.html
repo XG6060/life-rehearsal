@@ -1,62 +1,77 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{overflow:hidden;background:#0F172A;font-family:Inter,sans-serif}
-#c{width:100vw;height:100vh;position:relative}
-#loader{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);color:#6366F1;font-size:14px;z-index:10;transition:opacity .5s}
-.fl{position:absolute;color:#CBD5E1;font-size:12px;font-weight:500;padding:5px 16px;border-radius:20px;background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.15);backdrop-filter:blur(4px);z-index:5;animation:ft 4s ease-in-out infinite;pointer-events:none}
-@keyframes ft{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
-.fl:nth-child(2n){animation-delay:.5s}.fl:nth-child(3n){animation-delay:1s}.fl:nth-child(4n){animation-delay:1.5s}
+body{overflow:hidden;background:#0F172A;font-family:Inter,-apple-system,PingFang SC,Microsoft YaHei,sans-serif}
+.scene{width:100vw;height:100vh;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden}
+.grid{position:absolute;inset:0;background-image:radial-gradient(circle,rgba(99,102,241,0.05) 1px,transparent 1px);background-size:28px 28px}
+
+/* Central accent */
+.accent{width:36px;height:2px;background:#6366F1;border-radius:1px;margin-bottom:20px;z-index:2}
+.brand{font-size:38px;font-weight:700;color:#F1F5F9;letter-spacing:0.04em;z-index:2;margin-bottom:6px}
+.tagline{font-size:14px;color:#94A3B8;letter-spacing:0.08em;z-index:2;margin-bottom:40px}
+
+/* Feature dots */
+.features{display:flex;gap:32px;z-index:2}
+.feat{display:flex;align-items:center;gap:8px;color:#64748B;font-size:12px;font-weight:500}
+.feat::before{content:'';width:5px;height:5px;border-radius:50%;background:#6366F1;flex-shrink:0}
+
+/* Floating questions */
+.fq{position:absolute;color:rgba(203,213,225,0.5);font-size:12px;font-weight:500;padding:5px 15px;border-radius:20px;background:rgba(99,102,241,0.06);border:1px solid rgba(99,102,241,0.1);z-index:2;pointer-events:none;animation:fqFloat 8s ease-in-out infinite}
+@keyframes fqFloat{0%,100%{transform:translateY(0) translateX(0)}25%{transform:translateY(-10px) translateX(4px)}75%{transform:translateY(-5px) translateX(-3px)}}
+.fq:nth-child(3n){animation-delay:1s;animation-duration:9s}
+.fq:nth-child(4n){animation-delay:2s;animation-duration:7s}
+.fq:nth-child(5n){animation-delay:3s;animation-duration:10s}
+
+/* Large ambient circles */
+.circle{position:absolute;border-radius:50%;z-index:1;border:1px solid rgba(99,102,241,0.06)}
+.c1{width:300px;height:300px;top:15%;left:10%}
+.c2{width:200px;height:200px;bottom:20%;right:15%;border-color:rgba(99,102,241,0.04)}
+.c3{width:400px;height:400px;top:40%;right:-10%;border-color:rgba(99,102,241,0.03)}
+
+/* Particle */
+.p{position:absolute;border-radius:50%;background:rgba(99,102,241,0.12);pointer-events:none;animation:pFloat linear infinite;bottom:0}
+@keyframes pFloat{0%{transform:translateY(0) scale(0);opacity:0}15%{opacity:0.6}85%{opacity:0.08}100%{transform:translateY(-100vh) scale(0.5);opacity:0}}
 </style>
-<div id="c">
-<div id="loader">模型加载中...</div>
-<div class="fl" style="top:12%;left:8%">要不要分手</div>
-<div class="fl" style="top:22%;left:58%">要不要辞职</div>
-<div class="fl" style="top:36%;left:12%">要不要买房</div>
-<div class="fl" style="top:48%;left:65%">要不要结婚</div>
-<div class="fl" style="top:62%;left:22%">要不要跳槽</div>
-<div class="fl" style="top:14%;left:76%">要不要考研</div>
+</head>
+<body>
+<div class="scene">
+  <div class="grid"></div>
+  <div class="circle c1"></div>
+  <div class="circle c2"></div>
+  <div class="circle c3"></div>
+
+  <!-- Floating decision questions -->
+  <div class="fq" style="top:8%;left:10%">要不要分手</div>
+  <div class="fq" style="top:16%;left:60%">要不要辞职</div>
+  <div class="fq" style="top:28%;left:14%">要不要买房</div>
+  <div class="fq" style="top:38%;left:68%">要不要考研</div>
+  <div class="fq" style="top:50%;left:8%">要不要表白</div>
+  <div class="fq" style="top:60%;left:72%">要不要跳槽</div>
+  <div class="fq" style="top:72%;left:16%">要不要搬家</div>
+  <div class="fq" style="top:82%;left:58%">要不要换城市</div>
+
+  <!-- Brand -->
+  <div class="accent"></div>
+  <div class="brand">生活预演家</div>
+  <div class="tagline">AI DECISION SIMULATOR</div>
+  <div class="features">
+    <span class="feat">决策偏误检测</span>
+    <span class="feat">12 周心理模拟</span>
+    <span class="feat">多路径对比</span>
+  </div>
+
+  <!-- Particles -->
+  <div class="p" style="width:2px;height:2px;left:5%;animation-duration:10s;animation-delay:0s"></div>
+  <div class="p" style="width:3px;height:3px;left:15%;animation-duration:14s;animation-delay:2s"></div>
+  <div class="p" style="width:2px;height:2px;left:28%;animation-duration:12s;animation-delay:3s"></div>
+  <div class="p" style="width:4px;height:4px;left:40%;animation-duration:18s;animation-delay:1s"></div>
+  <div class="p" style="width:3px;height:3px;left:52%;animation-duration:16s;animation-delay:4s"></div>
+  <div class="p" style="width:2px;height:2px;left:65%;animation-duration:11s;animation-delay:2s"></div>
+  <div class="p" style="width:3px;height:3px;left:75%;animation-duration:20s;animation-delay:0s"></div>
+  <div class="p" style="width:4px;height:4px;left:88%;animation-duration:13s;animation-delay:3s"></div>
 </div>
-
-<script>(function(){var qs=["要不要分手","要不要换房","要不要辞职","要不要表白","要不要结婚","要不要买新车","要不要去旅行","要不要学编程","要不要减肥","要不要跳槽"];var fls=document.querySelectorAll(".fl");setInterval(function(){for(var i=0;i<fls.length;i++){if(Math.random()>.5)fls[i].textContent=qs[Math.floor(Math.random()*qs.length)]}},5000)})();</script>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/OBJLoader.js"></script>
-
-<script>
-var MODEL_URL='http://localhost:8090/model_simple.obj';
-
-var c=document.getElementById('c'),W=c.clientWidth,H=c.clientHeight;
-var scene=new THREE.Scene();scene.background=new THREE.Color(0x0F172A);
-scene.add(new THREE.AmbientLight(0x8888aa,0.8));
-scene.add(new THREE.HemisphereLight(0xffeedd,0x1a2744,0.5));
-var dl=new THREE.DirectionalLight(0xffffff,2.0);dl.position.set(3,8,5);scene.add(dl);
-
-var cam=new THREE.PerspectiveCamera(35,W/H,.1,30);cam.position.set(3,2.2,5);cam.lookAt(0,1,0);
-var r=new THREE.WebGLRenderer({antialias:true});r.setSize(W,H);r.setPixelRatio(Math.min(devicePixelRatio,2));
-r.outputEncoding=THREE.sRGBEncoding;r.toneMapping=THREE.ACESFilmicToneMapping;r.toneMappingExposure=1.0;
-c.appendChild(r.domElement);
-
-scene.add(new THREE.Mesh(new THREE.CircleGeometry(4,32),new THREE.MeshStandardMaterial({color:0x1a2744,roughness:.9})).rotateX(-Math.PI/2).translateY(-.05));
-
-var sp=new Float32Array(60*3);for(var i=0;i<60*3;i++)sp[i]=(Math.random()-.5)*(i%3===1?6:14);
-scene.add(new THREE.Points(new THREE.BufferGeometry().setAttribute('position',new THREE.BufferAttribute(sp,3)),new THREE.PointsMaterial({color:0x6366F1,size:.025,transparent:true,opacity:.35})));
-
-new THREE.OBJLoader().load(MODEL_URL,function(obj){
-  obj.traverse(function(ch){if(ch.isMesh){
-    ch.material=new THREE.MeshStandardMaterial({color:0x6366F1,roughness:0.3,metalness:0.1});
-    ch.castShadow=true;ch.receiveShadow=true;
-  }});
-  var box=new THREE.Box3().setFromObject(obj);
-  var s=new THREE.Vector3();box.getSize(s);
-  var sc=2.5/Math.max(s.x,s.y,s.z);
-  var ct=new THREE.Vector3();box.getCenter(ct);
-  obj.position.sub(ct.multiplyScalar(sc));obj.position.y+=.3;
-  obj.scale.set(sc,sc,sc);
-  scene.add(obj);
-  document.getElementById('loader').style.opacity='0';
-},undefined,function(e){console.error(e);document.getElementById('loader').textContent='加载失败';});
-
-var cl=new THREE.Clock();
-(function anim(){var t=cl.getElapsedTime();cam.position.x=3*Math.cos(t*.04);cam.position.z=5+Math.sin(t*.03);cam.lookAt(0,.5,0);r.render(scene,cam);requestAnimationFrame(anim)})();
-window.addEventListener('resize',function(){var w=c.clientWidth,h=c.clientHeight;cam.aspect=w/h;cam.updateProjectionMatrix();r.setSize(w,h)});
-</script>
+</body>
+</html>
