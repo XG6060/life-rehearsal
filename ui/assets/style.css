@@ -1,0 +1,41 @@
+/* 生活预演家 — 自定义样式 */
+
+.stApp {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* 报告卡片 */
+.report-card {
+    background: #f8f9fa;
+    border-radius: 12px;
+    padding: 20px;
+    margin: 10px 0;
+    border: 1px solid #e9ecef;
+}
+
+/* 偏误标签 */
+.bias-tag {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.85em;
+    font-weight: 500;
+}
+
+.bias-high { background: #fce4ec; color: #c62828; }
+.bias-medium { background: #fff3e0; color: #ef6c00; }
+.bias-low { background: #e8f5e9; color: #2e7d32; }
+
+/* 核心洞察区域 */
+.insight-box {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 12px;
+    padding: 24px;
+    margin: 16px 0;
+}
+
+.insight-box a {
+    color: #ffd700;
+}

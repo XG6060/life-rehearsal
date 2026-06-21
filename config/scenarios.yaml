@@ -1,0 +1,102 @@
+# 预置决策场景模板
+scenarios:
+
+  career_quit:
+    id: career_quit
+    label: "要不要裸辞"
+    icon: "💼"
+    description: "对当前工作不满意，想知道裸辞是解脱还是冲动"
+    default_options:
+      - label: "A：直接裸辞"
+        description: "辞职休息一段时间，再找工作"
+      - label: "B：骑驴找马"
+        description: "在职期间找好下家再跳槽"
+      - label: "C：继续忍耐"
+        description: "留在现公司，调整心态"
+    default_factors:
+      - name: "行业景气度"
+        importance: 0.9
+        uncertainty: 0.7
+      - name: "经济储备"
+        importance: 0.8
+        uncertainty: 0.3
+      - name: "市场竞争程度"
+        importance: 0.7
+        uncertainty: 0.6
+      - name: "家庭支持度"
+        importance: 0.6
+        uncertainty: 0.4
+
+  relationship_break:
+    id: relationship_break
+    label: "要不要分手"
+    icon: "💔"
+    description: "关系走到了十字路口，不知道是该坚持还是放手"
+    default_options:
+      - label: "A：继续在一起"
+        description: "努力修复关系，给对方和自己一个机会"
+      - label: "B：和平分手"
+        description: "体面地结束这段关系"
+    default_factors:
+      - name: "感情基础深度"
+        importance: 0.9
+        uncertainty: 0.3
+      - name: "核心矛盾可解决性"
+        importance: 0.8
+        uncertainty: 0.6
+      - name: "个人成长空间"
+        importance: 0.7
+        uncertainty: 0.4
+      - name: "家庭/社会压力"
+        importance: 0.5
+        uncertainty: 0.5
+
+  relocate:
+    id: relocate
+    label: "要不要搬家/换城市"
+    icon: "🏠"
+    description: "换个城市生活是一个大决定，机遇和风险并存"
+    default_options:
+      - label: "A：搬去新城市"
+        description: "到目标城市重新开始"
+      - label: "B：留在这里"
+        description: "继续在现城市生活发展"
+    default_factors:
+      - name: "职业发展空间"
+        importance: 0.9
+        uncertainty: 0.5
+      - name: "生活成本差异"
+        importance: 0.8
+        uncertainty: 0.3
+      - name: "社交圈/人脉"
+        importance: 0.7
+        uncertainty: 0.5
+      - name: "家庭/伴侣因素"
+        importance: 0.7
+        uncertainty: 0.4
+
+  education:
+    id: education
+    label: "要不要考研/留学"
+    icon: "📚"
+    description: "继续深造是投资自己还是逃避就业"
+    default_options:
+      - label: "A：全力备考"
+        description: "辞职或休学，全身心投入备考"
+      - label: "B：边工作边准备"
+        description: "在职备考，不放弃收入来源"
+      - label: "C：放弃深造"
+        description: "在当前职业路径上深耕"
+    default_factors:
+      - name: "自律程度"
+        importance: 0.9
+        uncertainty: 0.5
+      - name: "经济负担"
+        importance: 0.8
+        uncertainty: 0.4
+      - name: "学历回报率"
+        importance: 0.7
+        uncertainty: 0.6
+      - name: "年龄/时间成本"
+        importance: 0.6
+        uncertainty: 0.3

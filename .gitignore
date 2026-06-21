@@ -1,0 +1,23 @@
+.env
+data/
+*.db
+__pycache__/
+*.pyc
+*.pyo
+.DS_Store
+.vscode/
+.idea/
+*.egg-info/
+dist/
+build/
+ngrok.exe
+ngrok.zip
+test_*.txt
+*.tmp.*
+
+# 3D model files
+*.obj
+*.mtl
+*.jpg
+*.png
+ui/static/

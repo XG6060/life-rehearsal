@@ -1,0 +1,67 @@
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{overflow:hidden;background:#0F172A;font-family:Inter,sans-serif}
+#c{width:100vw;height:100vh;position:relative}
+#loader{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);color:#6366F1;font-size:14px;z-index:10;transition:opacity .5s}
+.fl{position:absolute;color:#CBD5E1;font-size:12px;font-weight:500;padding:5px 16px;border-radius:20px;background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.15);backdrop-filter:blur(4px);z-index:5;animation:ft 4s ease-in-out infinite;pointer-events:none}
+@keyframes ft{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.fl:nth-child(2n){animation-delay:.5s}.fl:nth-child(3n){animation-delay:1s}.fl:nth-child(4n){animation-delay:1.5s}
+</style>
+<div id="c">
+<div id="loader">模型加载中...</div>
+<div class="fl" style="top:12%;left:8%">要不要分手</div>
+<div class="fl" style="top:22%;left:58%">要不要辞职</div>
+<div class="fl" style="top:36%;left:12%">要不要买房</div>
+<div class="fl" style="top:48%;left:65%">要不要结婚</div>
+<div class="fl" style="top:62%;left:22%">要不要跳槽</div>
+<div class="fl" style="top:14%;left:76%">要不要考研</div>
+</div>
+
+<script>(function(){var qs=["要不要分手","要不要换房","要不要辞职","要不要表白","要不要结婚","要不要买新车","要不要去旅行","要不要学编程","要不要减肥","要不要跳槽"];var fls=document.querySelectorAll(".fl");setInterval(function(){for(var i=0;i<fls.length;i++){if(Math.random()>.5)fls[i].textContent=qs[Math.floor(Math.random()*qs.length)]}},5000)})();</script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/OBJLoader.js"></script>
+
+<script>
+var MODEL_URL='http://localhost:8090/model_lite.obj';
+var TEX_URL='http://localhost:8090/Blue_astronaut_Base.jpg';
+
+var c=document.getElementById('c'),W=c.clientWidth,H=c.clientHeight;
+var scene=new THREE.Scene();scene.background=new THREE.Color(0x0F172A);
+scene.add(new THREE.AmbientLight(0x8888aa,0.8));
+scene.add(new THREE.HemisphereLight(0xffeedd,0x1a2744,0.5));
+var dl=new THREE.DirectionalLight(0xffffff,2.0);dl.position.set(3,8,5);scene.add(dl);
+
+var cam=new THREE.PerspectiveCamera(35,W/H,.1,30);cam.position.set(3,2.2,5);cam.lookAt(0,1,0);
+var r=new THREE.WebGLRenderer({antialias:true});r.setSize(W,H);r.setPixelRatio(Math.min(devicePixelRatio,2));
+r.outputEncoding=THREE.sRGBEncoding;r.toneMapping=THREE.ACESFilmicToneMapping;r.toneMappingExposure=1.0;
+c.appendChild(r.domElement);
+
+scene.add(new THREE.Mesh(new THREE.CircleGeometry(4,32),new THREE.MeshStandardMaterial({color:0x1a2744,roughness:.9})).rotateX(-Math.PI/2).translateY(-.05));
+
+var sp=new Float32Array(60*3);for(var i=0;i<60*3;i++)sp[i]=(Math.random()-.5)*(i%3===1?6:14);
+scene.add(new THREE.Points(new THREE.BufferGeometry().setAttribute('position',new THREE.BufferAttribute(sp,3)),new THREE.PointsMaterial({color:0x6366F1,size:.025,transparent:true,opacity:.35})));
+
+var texLoader=new THREE.TextureLoader();
+texLoader.load(TEX_URL,function(tex){
+  tex.encoding=THREE.sRGBEncoding;
+  new THREE.OBJLoader().load(MODEL_URL,function(obj){
+    obj.traverse(function(ch){if(ch.isMesh){
+      ch.material=new THREE.MeshStandardMaterial({map:tex,roughness:0.35,metalness:0.0});
+      ch.castShadow=true;ch.receiveShadow=true;
+    }});
+    var box=new THREE.Box3().setFromObject(obj);
+    var s=new THREE.Vector3();box.getSize(s);
+    var sc=2.5/Math.max(s.x,s.y,s.z);
+    var ct=new THREE.Vector3();box.getCenter(ct);
+    obj.position.sub(ct.multiplyScalar(sc));obj.position.y+=.3;
+    obj.scale.set(sc,sc,sc);
+    scene.add(obj);
+    document.getElementById('loader').style.opacity='0';
+  },undefined,function(e){console.error(e);document.getElementById('loader').textContent='加载失败';});
+});
+
+var cl=new THREE.Clock();
+(function anim(){var t=cl.getElapsedTime();cam.position.x=3*Math.cos(t*.04);cam.position.z=5+Math.sin(t*.03);cam.lookAt(0,.5,0);r.render(scene,cam);requestAnimationFrame(anim)})();
+window.addEventListener('resize',function(){var w=c.clientWidth,h=c.clientHeight;cam.aspect=w/h;cam.updateProjectionMatrix();r.setSize(w,h)});
+</script>

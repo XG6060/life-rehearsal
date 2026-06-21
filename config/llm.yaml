@@ -1,0 +1,31 @@
+# LLM 模型与参数配置（DeepSeek / OpenAI 通用格式）
+models:
+  # 主要推理模型
+  primary:
+    id: deepseek-chat
+    max_tokens: 4096
+    temperature: 0.7
+
+  # 快速/低成本模型
+  fast:
+    id: deepseek-chat
+    max_tokens: 2048
+    temperature: 0.6
+
+  # 深度分析模型（报告生成）
+  deep:
+    id: deepseek-chat
+    max_tokens: 8192
+    temperature: 0.8
+
+# Token 预算控制
+budget:
+  max_tokens_per_session: 50000
+  max_tokens_per_day: 200000
+  warn_at: 0.8
+
+# 缓存
+cache:
+  enabled: true
+  ttl_seconds: 3600
+  max_entries: 1000
