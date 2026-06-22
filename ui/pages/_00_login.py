@@ -41,38 +41,19 @@ def render() -> None:
                 reg_nick = st.text_input("昵称（选填）", placeholder="如何称呼你")
                 reg_pwd = st.text_input("密码", type="password", placeholder="至少 6 位")
                 reg_cfm = st.text_input("确认密码", type="password", placeholder="再次输入密码")
-                col_code, col_btn = st.columns([3, 2])
-                with col_code:
-                    reg_code = st.text_input("验证码", placeholder="6 位数字")
-                with col_btn:
-                    st.markdown("<br>", unsafe_allow_html=True)
-                    send_clicked = st.form_submit_button("发送验证码", use_container_width=True)
-                if reg_email and send_clicked:
-                    from src.services.email_service import generate_code, send_verification_email
-                    code = generate_code(reg_email)
-                    if send_verification_email(reg_email, code):
-                        st.success(f"验证码已发送至 {reg_email}")
-                    else:
-                        st.error("发送失败，请检查邮箱地址")
                 if st.form_submit_button("注册", use_container_width=True, type="primary"):
                     if not reg_email or not reg_pwd:
                         st.error("请填写邮箱和密码")
                     elif reg_pwd != reg_cfm:
                         st.error("两次密码不一致")
-                    elif not reg_code:
-                        st.error("请输入验证码")
                     else:
-                        from src.services.email_service import verify_code
-                        if not verify_code(reg_email, reg_code):
-                            st.error("验证码错误或已过期")
+                        auth = AuthService()
+                        result = auth.register(reg_email, reg_pwd, reg_nick)
+                        if result["ok"]:
+                            st.session_state.logged_in_user = result["user"]
+                            st.rerun()
                         else:
-                            auth = AuthService()
-                            result = auth.register(reg_email, reg_pwd, reg_nick)
-                            if result["ok"]:
-                                st.session_state.logged_in_user = result["user"]
-                                st.rerun()
-                            else:
-                                st.error(result["error"])
+                            st.error(result["error"])
         with tab_forgot:
             with st.form("forgot_form"):
                 forgot_email = st.text_input("注册邮箱", placeholder="your@email.com")
