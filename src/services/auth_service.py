@@ -36,9 +36,17 @@ class AuthService:
                     email         TEXT UNIQUE NOT NULL,
                     nickname      TEXT DEFAULT '',
                     password_hash TEXT NOT NULL,
+                    security_question TEXT DEFAULT '',
+                    security_answer   TEXT DEFAULT '',
                     created_at    TEXT DEFAULT ''
                 )
             """)
+            # Add columns for existing tables
+            for col in ["security_question TEXT DEFAULT ''", "security_answer TEXT DEFAULT ''"]:
+                try:
+                    conn.execute(f"ALTER TABLE accounts ADD COLUMN {col}")
+                except Exception:
+                    pass
             conn.execute(
                 "CREATE UNIQUE INDEX IF NOT EXISTS idx_accounts_email "
                 "ON accounts(email)"
@@ -46,7 +54,7 @@ class AuthService:
 
     # ── 注册 ──────────────────────────────────────────────────────
 
-    def register(self, email: str, password: str, nickname: str = "") -> dict:
+    def register(self, email: str, password: str, nickname: str = "", security_question: str = "", security_answer: str = "") -> dict:
         """注册新用户
 
         Returns:
@@ -179,6 +187,31 @@ class AuthService:
             )
             logger.info(f"Password reset for {email}")
             return {"ok": True}
+
+    def verify_security_answer(self, email: str, answer: str) -> dict:
+        """验证密保答案，返回密保问题"""
+        email = email.strip().lower()
+        with sqlite3.connect(str(self.db_path)) as conn:
+            conn.row_factory = sqlite3.Row
+            row = conn.execute(
+                "SELECT security_question, security_answer FROM accounts WHERE email = ?", (email,)
+            ).fetchone()
+            if row is None:
+                return {"ok": False, "error": "该邮箱未注册"}
+            if not row["security_question"]:
+                return {"ok": False, "error": "该账户未设置密保问题"}
+            if answer.strip() != row["security_answer"]:
+                return {"ok": False, "error": "密保答案错误"}
+            return {"ok": True, "question": row["security_question"]}
+
+    def get_security_question(self, email: str) -> str:
+        """获取邮箱对应的密保问题"""
+        email = email.strip().lower()
+        with sqlite3.connect(str(self.db_path)) as conn:
+            row = conn.execute(
+                "SELECT security_question FROM accounts WHERE email = ?", (email,)
+            ).fetchone()
+            return row[0] if row and row[0] else ""
 
     def get_user(self, user_id: str) -> Optional[dict]:
         """根据 user_id 获取用户信息"""

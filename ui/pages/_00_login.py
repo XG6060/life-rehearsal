@@ -41,48 +41,78 @@ def render() -> None:
                 reg_nick = st.text_input("昵称（选填）", placeholder="如何称呼你")
                 reg_pwd = st.text_input("密码", type="password", placeholder="至少 6 位")
                 reg_cfm = st.text_input("确认密码", type="password", placeholder="再次输入密码")
+                reg_sq = st.selectbox("密保问题（找回密码用）",
+                    ["你小学班主任叫什么？", "你最好的朋友叫什么？",
+                     "你的出生地在哪？", "你最喜欢的书是什么？",
+                     "自定义密保问题"])
+                if reg_sq == "自定义密保问题":
+                    reg_sq = st.text_input("请输入你的密保问题")
+                reg_sa = st.text_input("密保答案", placeholder="输入答案")
                 if st.form_submit_button("注册", use_container_width=True, type="primary"):
                     if not reg_email or not reg_pwd:
                         st.error("请填写邮箱和密码")
                     elif reg_pwd != reg_cfm:
                         st.error("两次密码不一致")
+                    elif not reg_sq or not reg_sa:
+                        st.error("请设置密保问题和答案")
                     else:
                         auth = AuthService()
-                        result = auth.register(reg_email, reg_pwd, reg_nick)
+                        result = auth.register(reg_email, reg_pwd, reg_nick, reg_sq, reg_sa)
                         if result["ok"]:
                             st.session_state.logged_in_user = result["user"]
                             st.rerun()
                         else:
                             st.error(result["error"])
         with tab_forgot:
-            with st.form("forgot_form"):
-                forgot_email = st.text_input("注册邮箱", placeholder="your@email.com")
-                col_fc, col_fb = st.columns([3, 2])
-                with col_fc:
-                    forgot_code = st.text_input("验证码", placeholder="6 位数字")
-                with col_fb:
-                    st.markdown("<br>", unsafe_allow_html=True)
-                    send_reset_clicked = st.form_submit_button("发送验证码", use_container_width=True)
-                forgot_pwd = st.text_input("新密码", type="password", placeholder="至少 6 位")
-                if forgot_email and send_reset_clicked:
-                    from src.services.email_service import generate_code, send_verification_email
-                    code = generate_code(forgot_email)
-                    if send_verification_email(forgot_email, code):
-                        st.success(f"验证码已发送至 {forgot_email}")
-                    else:
-                        st.error("发送失败，请检查邮箱地址")
-                if st.form_submit_button("重置密码", use_container_width=True, type="primary"):
-                    if not forgot_email or not forgot_pwd or not forgot_code:
-                        st.error("请填写所有字段")
-                    else:
-                        from src.services.email_service import verify_code
-                        if not verify_code(forgot_email, forgot_code):
-                            st.error("验证码错误或已过期")
+            if "forgot_step" not in st.session_state:
+                st.session_state.forgot_step = 1
+            if "forgot_email_sq" not in st.session_state:
+                st.session_state.forgot_email_sq = ""
+            if "forgot_question" not in st.session_state:
+                st.session_state.forgot_question = ""
+
+            if st.session_state.forgot_step == 1:
+                with st.form("forgot_step1"):
+                    forgot_email = st.text_input("注册邮箱", placeholder="your@email.com")
+                    if st.form_submit_button("查询密保问题", use_container_width=True, type="primary"):
+                        auth = AuthService()
+                        q = auth.get_security_question(forgot_email)
+                        if not q:
+                            st.error("该邮箱未注册或未设置密保问题")
+                        else:
+                            st.session_state.forgot_email_sq = forgot_email
+                            st.session_state.forgot_question = q
+                            st.session_state.forgot_step = 2
+                            st.rerun()
+            elif st.session_state.forgot_step == 2:
+                st.info(f"密保问题：{st.session_state.forgot_question}")
+                with st.form("forgot_step2"):
+                    answer = st.text_input("密保答案", placeholder="输入答案")
+                    if st.form_submit_button("验证答案", use_container_width=True, type="primary"):
+                        auth = AuthService()
+                        r = auth.verify_security_answer(st.session_state.forgot_email_sq, answer)
+                        if r["ok"]:
+                            st.session_state.forgot_step = 3
+                            st.rerun()
+                        else:
+                            st.error(r["error"])
+            elif st.session_state.forgot_step == 3:
+                st.success("密保验证通过！")
+                with st.form("forgot_step3"):
+                    new_pwd = st.text_input("新密码", type="password", placeholder="至少 6 位")
+                    new_cfm = st.text_input("确认新密码", type="password", placeholder="再次输入")
+                    if st.form_submit_button("重置密码", use_container_width=True, type="primary"):
+                        if not new_pwd:
+                            st.error("请输入新密码")
+                        elif new_pwd != new_cfm:
+                            st.error("两次密码不一致")
                         else:
                             auth = AuthService()
-                            result = auth.reset_password(forgot_email, forgot_pwd)
+                            result = auth.reset_password(st.session_state.forgot_email_sq, new_pwd)
                             if result["ok"]:
                                 st.success("密码已重置，请登录")
+                                st.session_state.forgot_step = 1
+                                st.rerun()
                             else:
                                 st.error(result["error"])
 
