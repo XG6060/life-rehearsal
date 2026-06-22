@@ -19,7 +19,7 @@ def render() -> None:
     with right:
         for _ in range(12):
             st.markdown("")
-        tab_login, tab_register = st.tabs(["登录", "注册"])
+        tab_login, tab_register, tab_forgot = st.tabs(["登录", "注册", "找回密码"])
         with tab_login:
             with st.form("login_form"):
                 login_email = st.text_input("邮箱", placeholder="your@email.com")
@@ -71,6 +71,37 @@ def render() -> None:
                             if result["ok"]:
                                 st.session_state.logged_in_user = result["user"]
                                 st.rerun()
+                            else:
+                                st.error(result["error"])
+        with tab_forgot:
+            with st.form("forgot_form"):
+                forgot_email = st.text_input("注册邮箱", placeholder="your@email.com")
+                col_fc, col_fb = st.columns([3, 2])
+                with col_fc:
+                    forgot_code = st.text_input("验证码", placeholder="6 位数字")
+                with col_fb:
+                    st.markdown("<br>", unsafe_allow_html=True)
+                    send_reset_clicked = st.form_submit_button("发送验证码", use_container_width=True)
+                forgot_pwd = st.text_input("新密码", type="password", placeholder="至少 6 位")
+                if forgot_email and send_reset_clicked:
+                    from src.services.email_service import generate_code, send_verification_email
+                    code = generate_code(forgot_email)
+                    if send_verification_email(forgot_email, code):
+                        st.success(f"验证码已发送至 {forgot_email}")
+                    else:
+                        st.error("发送失败，请检查邮箱地址")
+                if st.form_submit_button("重置密码", use_container_width=True, type="primary"):
+                    if not forgot_email or not forgot_pwd or not forgot_code:
+                        st.error("请填写所有字段")
+                    else:
+                        from src.services.email_service import verify_code
+                        if not verify_code(forgot_email, forgot_code):
+                            st.error("验证码错误或已过期")
+                        else:
+                            auth = AuthService()
+                            result = auth.reset_password(forgot_email, forgot_pwd)
+                            if result["ok"]:
+                                st.success("密码已重置，请登录")
                             else:
                                 st.error(result["error"])
 

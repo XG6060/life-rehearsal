@@ -159,6 +159,27 @@ class AuthService:
             logger.info(f"Password changed for user {user_id}")
             return {"ok": True}
 
+    def reset_password(self, email: str, new_pwd: str) -> dict:
+        """通过邮箱验证码重置密码"""
+        email = email.strip().lower()
+        if len(new_pwd) < 6:
+            return {"ok": False, "error": "新密码至少 6 位"}
+
+        with sqlite3.connect(str(self.db_path)) as conn:
+            row = conn.execute(
+                "SELECT id FROM accounts WHERE email = ?", (email,)
+            ).fetchone()
+            if row is None:
+                return {"ok": False, "error": "该邮箱未注册"}
+
+            new_hash = bcrypt.hashpw(new_pwd.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
+            conn.execute(
+                "UPDATE accounts SET password_hash = ? WHERE email = ?",
+                (new_hash, email),
+            )
+            logger.info(f"Password reset for {email}")
+            return {"ok": True}
+
     def get_user(self, user_id: str) -> Optional[dict]:
         """根据 user_id 获取用户信息"""
         with sqlite3.connect(str(self.db_path)) as conn:
